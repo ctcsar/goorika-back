@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -18,15 +19,20 @@ class AuthController extends Controller
 //        if (! Auth::attempt($request->only('email', 'password'), $request->has('remember')))
         {
 //            var_dump($request);
-            return  'Неправильный логин или пароль' . Auth::check();
+            return  'Неправильный логин или пароль';
         }
 
 
 
         else {
-            return redirect('api/users');
-            return 'Вы успешно авторизовались: ' . Auth::check();
-//            return $request->session()->all();
+            $token = Str::random(80);
+            $request->user()->forceFill([
+                'api_token' => hash('sha256', $token),
+            ])->save();
+            $user = Auth::user();
+            $result = ['result' => 'Вы успешно авторизовались', 'id' => $user->id, 'email'=> $user->email, 'api_token' => $token];
+
+            return json_encode($result);
         }
     }
 
@@ -35,19 +41,22 @@ class AuthController extends Controller
      * Создает нового пользователя, автоматически авторизуя его
      *
      * @param Request $request
-     * @return void
+//     * @return void
      */
 
     public function postReg(Request $request)
     {
-        $user = User::create([
+        $token = Str::random(80);
+        $user = User::forceCreate([
             'email'    => $request->input('email'),
             'name'     => $request->input('name'),
-            'password' => bcrypt($request->input('password'))
+            'password' => bcrypt($request->input('password')),
+            'api_token' => hash('sha256', $token)
         ]);
 
+        $result = ['id' => $user->id, 'email'=> $user->email, 'api_token' => $token];
 
-        return $user;
+        return json_encode($result);
     }
 }
 

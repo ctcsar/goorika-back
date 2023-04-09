@@ -20,8 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/users', [UserController::class, 'getAllUsers'])->middleware('auth');
-Route::post('/users', [UserController::class, 'createNewUser'])->middleware('auth');
-Route::put('/users', [UserController::class, 'updateUser']);
+Route::middleware('auth:api')->get('/users', [UserController::class, 'getAllUsers']);
+
 Route::post('/reg', [AuthController::class, 'postReg']);
 Route::post('/login', [AuthController::class, 'postSignin']);

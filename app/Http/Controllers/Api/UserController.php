@@ -10,8 +10,8 @@ class UserController extends Controller
 {
     public function getAllUsers()
     {
-        $users = DB::table('users')->get();
-        return $users;
+        $result = DB::table('users')->get();
+        return json_encode($result);
 //        return csrf_token();
     }
 
