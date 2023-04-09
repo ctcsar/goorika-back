@@ -10,9 +10,9 @@ class UserController extends Controller
 {
     public function getAllUsers()
     {
-        $users = DB::table('user')->get();
-//        return $users;
-        return csrf_token();
+        $users = DB::table('users')->get();
+        return $users;
+//        return csrf_token();
     }
 
     public function createNewUser(Request $request)

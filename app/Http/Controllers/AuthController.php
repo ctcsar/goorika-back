@@ -24,6 +24,7 @@ class AuthController extends Controller
 
 
         else {
+            return redirect('api/users');
             return 'Вы успешно авторизовались: ' . Auth::check();
 //            return $request->session()->all();
         }
