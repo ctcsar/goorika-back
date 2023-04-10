@@ -30,7 +30,7 @@ class AuthController extends Controller
                 'api_token' => hash('sha256', $token),
             ])->save();
             $user = Auth::user();
-            $result = ['result' => 'Вы успешно авторизовались', 'id' => $user->id, 'email'=> $user->email, 'api_token' => $token];
+            $result = ['id' => $user->id, 'email'=> $user->email, 'api_token' => $token, 'name'=> $user->name, 'role'=>$user->role];
 
             return json_encode($result);
         }
@@ -51,10 +51,11 @@ class AuthController extends Controller
             'email'    => $request->input('email'),
             'name'     => $request->input('name'),
             'password' => bcrypt($request->input('password')),
-            'api_token' => hash('sha256', $token)
+            'api_token' => hash('sha256', $token),
+            'role' => 'user'
         ]);
 
-        $result = ['id' => $user->id, 'email'=> $user->email, 'api_token' => $token];
+        $result = ['id' => $user->id, 'email'=> $user->email, 'api_token' => $token, 'name'=> $user->name, 'role'=>$user->role];
 
         return json_encode($result);
     }
