@@ -11,26 +11,22 @@ use Illuminate\Support\Str;
 class AuthController extends Controller
 {
 
-
-    public function postSignin(Request $request)
+    /**
+     * Авторизует пользователя и возвращает токен
+     *
+     * @param Request $request
+     * @return string
+     */
+    public function signin(Request $request)
     {
 
-        if (! Auth::attempt($request->only('email', 'password'), $remember = true))
-//        if (! Auth::attempt($request->only('email', 'password'), $request->has('remember')))
+        if (! Auth::attempt($request->only('email', 'password')))
         {
 //            var_dump($request);
             return  'Неправильный логин или пароль';
-        }
-
-
-
-        else {
-            $token = Str::random(80);
-            $request->user()->forceFill([
-                'api_token' => hash('sha256', $token),
-            ])->save();
+        }  else {
             $user = Auth::user();
-            $result = ['id' => $user->id, 'email'=> $user->email, 'api_token' => $token, 'name'=> $user->name, 'role'=>$user->role];
+            $result = ['id' => $user->id, 'email'=> $user->email, 'api_token' => $user->api_token, 'name'=> $user->name, 'role'=>$user->role];
 
             return json_encode($result);
         }
@@ -41,23 +37,38 @@ class AuthController extends Controller
      * Создает нового пользователя, автоматически авторизуя его
      *
      * @param Request $request
-//     * @return void
+     * @return string
      */
-
-    public function postReg(Request $request)
+    public function registration(Request $request):string
     {
-        $token = Str::random(80);
         $user = User::forceCreate([
             'email'    => $request->input('email'),
             'name'     => $request->input('name'),
             'password' => bcrypt($request->input('password')),
-            'api_token' => hash('sha256', $token),
+            'api_token' =>  Str::uuid(),
             'role' => 'user'
         ]);
 
-        $result = ['id' => $user->id, 'email'=> $user->email, 'api_token' => $token, 'name'=> $user->name, 'role'=>$user->role];
+        $result = ['id' => $user->id, 'email'=> $user->email, 'api_token' => $user->api_token, 'name'=> $user->name, 'role'=>$user->role];
 
         return json_encode($result);
+    }
+
+
+    /**
+     * Создает нового пользователя, автоматически авторизуя его
+     *
+     * @return string
+     */
+    public function logout()
+    {
+        $user = Auth::user();
+        $user->api_token = Str::uuid();
+        if($user->save()){
+            return json_encode(['status'=>'success']);
+        } else {
+            return json_encode(['status'=>'error']);
+        }
     }
 }
 

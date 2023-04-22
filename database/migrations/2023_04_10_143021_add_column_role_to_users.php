@@ -19,7 +19,7 @@ return new class extends Migration
 
         DB::table('users')->where(['name'=>'root', 'email'=>'root'])->delete();
 
-        DB::table('users')->updateOrInsert(['name'=>'root', 'email'=>'root', 'role'=>'root', 'password'=>bcrypt('root')]);
+        DB::table('users')->updateOrInsert(['name'=>'root', 'email'=>'root', 'role'=>'root', 'password'=>bcrypt('root'), 'api_token'=>\Illuminate\Support\Str::uuid()]);
     }
 
     /**
