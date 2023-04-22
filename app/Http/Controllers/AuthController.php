@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller
@@ -34,7 +33,7 @@ class AuthController extends Controller
 
 
     /**
-     * Создает нового пользователя, автоматически авторизуя его
+     * Создает нового пользователя, автоматически авторизуя его и возвращает токен
      *
      * @param Request $request
      * @return string
@@ -56,7 +55,7 @@ class AuthController extends Controller
 
 
     /**
-     * Создает нового пользователя, автоматически авторизуя его
+     * Разлогинивает пользователя и меняет токен
      *
      * @return string
      */
@@ -65,6 +64,7 @@ class AuthController extends Controller
         $user = Auth::user();
         $user->api_token = Str::uuid();
         if($user->save()){
+            Auth::forgetUser();
             return json_encode(['status'=>'success']);
         } else {
             return json_encode(['status'=>'error']);

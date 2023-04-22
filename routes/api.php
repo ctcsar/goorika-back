@@ -1,8 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\RootController;
 use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,12 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::middleware('auth:api')->get('/users', [UserController::class, 'getAllUsers']);
-
+// Методы регистрации и авторизации пользователя
 Route::post('/reg', [AuthController::class, 'registration']);
 Route::post('/login', [AuthController::class, 'signin']);
 Route::middleware('auth:api')->post('/logout', [AuthController::class, 'logout']);
+
+// Методы для пользователя с правами root
+Route::middleware('auth:api', 'role:root')->get('/root/get-users', [RootController::class, 'getUsers']);
+Route::middleware('auth:api', 'role:root')->post('/root/change-users-role', [RootController::class, 'changeRole']);
