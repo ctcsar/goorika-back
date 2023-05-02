@@ -7,7 +7,12 @@ use Illuminate\Http\Request;
 
 class ProductsController extends Controller
 {
-    public function createProduct(Request $request)
+    /**
+     * Создает новый товар
+     * @param Request $request
+     * @return false|string
+     */
+    public function createProduct(Request $request): string
     {
         $product = Products::create([
             'userId' => $request->input('userId'),
@@ -24,7 +29,12 @@ class ProductsController extends Controller
         return json_encode($product);
     }
 
-    public function updateProduct(Request $request)
+    /**
+     * Обновляет данные товара
+     * @param Request $request
+     * @return false|string
+     */
+    public function updateProduct(Request $request): string
     {
         $product = Products::where('id', $request->input('id'))
             ->update([
@@ -41,8 +51,28 @@ class ProductsController extends Controller
         ]);
         return json_encode($product);    }
 
-    public function getAllProducts()
+
+    /**
+     * Возвращает все товары
+     * @return false|string
+     */
+    public function getAllProducts(): string
     {
         return json_encode(Products::all());
+    }
+
+    /**
+     * Возвращает количество товаров
+     * @return false|string
+     */
+    public function getProductCount(): string
+    {
+        return json_encode(['number of products' => Products::count()]);
+    }
+
+
+    public function getLimitProducts(Request $request)
+    {
+        return json_encode(Products::find()->count(10));
     }
 }

@@ -29,3 +29,5 @@ Route::middleware('auth:api', 'role:root')->post('/root/change-users-role', [Roo
 Route::post('/product/create-product', [ProductsController::class, 'createProduct']);
 Route::post('/product/update-product', [ProductsController::class, 'updateProduct']);
 Route::get('/product/get-all-products', [ProductsController::class, 'getAllProducts']);
+Route::get('/product/get-products-count', [ProductsController::class, 'getProductCount']);
+Route::get('/product/get-limited-products', [ProductsController::class, 'getLimitProducts']);
