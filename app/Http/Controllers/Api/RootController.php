@@ -26,7 +26,7 @@ class RootController extends Controller
     }
 
     public function changeRole(Request $request) {
-        if(DB::table('users')->where('id', $request->input('id'))->update(['role'=>$request->input('role')])){
+        if(DB::table('users')->where('id', (int)$request->input('id'))->update(['role'=>$request->input('role')])){
             return json_encode(['status'=>'success']);
         } else {
             return json_encode(['status'=>'error']);
